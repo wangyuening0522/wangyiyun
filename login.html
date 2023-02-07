@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>log_in</title>
+  </head>
+  <style>
+    * {
+      margin: 0 auto;
+    }
+    .box {
+      height: 300px;
+      width: 500px;
+      background-color: grey;
+      border-radius: 24px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      padding: 20px 0 0 0;
+    }
+    input {
+      border-radius: 24px;
+      border: 2px solid #3498db;
+      display: block;
+      margin: 20px auto;
+      padding: 14px 20px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .btn {
+      border-radius: 24px;
+      border: 2px solid #3498db;
+      padding: 14px 20px;
+      text-align: center;
+    }
+  </style>
+  <body>
+    <div class="box">
+      <h1>LOGIN</h1>
+      <input onchange="handlePhone(this)" type="text" placeholder="Phone" />
+      <input
+        onchange="handlePassword(this)"
+        type="password"
+        placeholder="Password"
+      />
+      <button class="btn">Login</button>
+      <button class="btn btn_lose">登陆不上点我！</button>
+    </div>
+    <script>
+      let btn = document.querySelector("button");
+      const form = {
+        phone: "",
+        password: "",
+      };
+      const message = {};
+      const handlePhone = (e) => {
+        form.phone = e.value;
+        console.log(form.phone);
+      };
+      const handlePassword = (e) => {
+        // form.password = e.value
+        // console.log(form.password)
+        form.password = "3a2f4d9359a47f8a122987c2cee1f27b";
+      };
+      btn.addEventListener("click", async () => {
+        let inputText = document.querySelector('input[type="text"]').value;
+        let inputPassword = document.querySelector(
+          'input[type="password"]'
+        ).value;
+        console.log(inputText);
+        console.log(inputPassword);
+        const res = await fetch(`http://localhost:3000/login/cellphone`, {
+          method: "post",
+          body: JSON.stringify({
+            phone: form.phone,
+            md5_password: form.password,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: 'include',
+        })
+          .then((res) => {
+            const result = res.json();
+            console.log("res.json()", result);
+            return result;
+          })
+          .then((data) => {
+            console.log(data);
+            login(data);
+            checkLogin();
+            console.log(data.profile.nickname);
+          })
+          .catch((err) => {
+            throw new Error("请求错误" + err);
+          });
+        window.location.href = "home_page.html";
+      });
+
+      function login(user) {
+        localStorage.setItem("user", JSON.stringify(user));
+      }
+      function checkLogin() {
+        const user = localStorage.getItem("user");
+        if (user) {
+          return JSON.parse(user);
+        }
+        return null;
+      }
+      let btn_lose = document.querySelector(".btn_lose");
+      btn_lose.addEventListener("click", function () {
+        window.location.href = "auth_code.html";
+      });
+    </script>
+  </body>
+</html>

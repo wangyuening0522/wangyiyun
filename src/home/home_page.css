@@ -140,6 +140,9 @@ left:15%;} */
   left: 15%;
   top: 8%;
 }
+.main {
+  padding-left: 20px;
+}
 .shouye {
   height: 100%;
   /* background-color: pink; */
@@ -263,31 +266,34 @@ left:15%;} */
   padding: 2% 1%;
 }
 .main .title {
-  height: 35%;
+  height: 240px;
   width: 100%;
   /* background-color: green; */
   display: flex;
   align-items: center;
+  margin: 20px 0;
 }
 .title .title_img {
   /* background-color: gold; */
-  height: 80%;
-  width: 18%;
+  height: 100%;
   margin-left: 2%;
   margin-right: 2%;
   display: flex;
+  justify-content: center;
 }
 .title_img .newImg {
   border-radius: 10px;
 }
 .title .title_rel {
   width: 80%;
-  height: 80%;
+  display: flex;
+  flex-direction: column;
+  margin-left: 30px;
+  /* align-items: center; */
   /* background-color: firebrick; */
-  line-height: 100%;
+
 }
 .title .title_rel .creatorgd {
-  margin: 2% 0;
   border: 1px solid blanchedalmond;
 }
 .span {
@@ -303,11 +309,16 @@ left:15%;} */
 }
 .span_son {
   width: 20%;
-  border: 1px solid rgb(246, 246, 247);
-  border-radius: 30px;
+  border: 2px solid #d0d7de;
+  border-radius: 5px;
   display: flex;
+  color: gray;
+  background-color: rgb(243,244,246);
   justify-content: center;
   align-items: center;
+}
+.span_son:hover {
+  background-color: #fff;
 }
 .findMusic_ul {
   height: 10%;
@@ -755,4 +766,24 @@ left:15%;} */
   border-radius: 7px;
   width: 20%;
   border: 1px solid rgb(229, 229, 229);
+}
+.songlist_con {
+  list-style: none;
+  /* 移除li前面的黑点 */
+  list-style-type: none; 
+  counter-reset: sectioncounter;
+}
+.songlist_con li:before {
+  content: counter(sectioncounter) " ";
+  counter-increment: sectioncounter;
+  color: grey;
+  font-family: HelveticaNeue-Bold, HelveticaNeue;
+}
+.songlist_con li:nth-child(even){
+  /* 利用css选择器，偶数列增加背景色 */
+  background: rgb(234, 235, 237);
+}
+.songlist_con li:nth-child(even){
+  /* 利用css选择器，偶数列增加背景色 */
+  background: rgb(240, 240, 240);
 }

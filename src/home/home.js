@@ -1,10 +1,11 @@
 import store from "../store.js";
 import request from "../request.js";
 import showPlaylist from "../playlist/showPlaylist.js";
-import lyric from "../playlist/lyric.js";
+import handleSongDetailClick from "../playlist/handleSongDetailClick.js";
+import lyric from '../playlist/lyric.js'
 // 解构 export deflaut只能导出一个，不加deflaut可以导出多个但是要
 //解构赋值
-import {handleModelClick} from '../utils.js';
+import { handleModelClick } from "../utils.js";
 let data1;
 const user = JSON.parse(localStorage.getItem("user"));
 var touxiang = document.querySelector(".touxiang");
@@ -98,7 +99,7 @@ window.addEventListener("load", async () => {
               let comment_con = document.querySelector(".comment_con");
               comment.addEventListener("click", async () => {
                 songlist_con.style.display = "none";
-                const res = await fetch(
+                const nowPlayList = await fetch(
                   `http://localhost:3000/comment/playlist?id=${Number(
                     that.className
                   )}`
@@ -140,8 +141,44 @@ window.addEventListener("load", async () => {
                       return result;
                     })
                     .then((datasong) => {
-                      // console.log(datasong);
+                      console.log("datasong", datasong);
                       // console.log(datasong.data[0].url);
+
+                      // ----------------------------------------------------------------
+                      const songId = datasong.data[0].id;
+                      // console.log(songId);
+                      store.action.setCurrentSongIdxById(songId);
+                      let currentSongIdx = store.state.currentSongIdx;
+                      console.log(currentSongIdx);
+                      let music_img = document.querySelector(".music_img");
+                      let img_name = document.querySelector(".img_name");
+                      let img_name_p =
+                        document.querySelector(".img_name_artist");
+                      // console.log('img_name_p',img_name_p);
+                      music_img.src =
+                        playlist2.tracks[currentSongIdx].al.picUrl;
+                      img_name.innerHTML =
+                        playlist2.tracks[currentSongIdx].name;
+                      img_name_p.innerHTML =
+                        playlist2.tracks[currentSongIdx].ar[0].name;
+                      let upload = document.querySelector(".upload");
+                      music_img.addEventListener("mousemove", function () {
+                        upload.style.display = "block";
+                      });
+                      music_img.addEventListener("mouseout", function () {
+                        upload.style.display = "none";
+                      });
+                      upload.addEventListener("mousemove", function () {
+                        upload.style.display = "block";
+                      });
+                      upload.addEventListener("mouseout", function () {
+                        upload.style.display = "none";
+                      });
+                      let main = document.querySelector(".main");
+                      upload.addEventListener("click", function () {
+                        main.style.display = "none";
+                      });
+                      // ------------------------
 
                       let audio = document.getElementById("audio");
                       // audio.src=null;
@@ -154,7 +191,6 @@ window.addEventListener("load", async () => {
                       });
                       // 设置前进歌曲效果
                       let qian = document.querySelector(".icon-qianjin");
-                      let currentSongIdx = store.state.currentSongIdx;
                       qian.addEventListener(
                         "click",
 
@@ -281,7 +317,7 @@ window.addEventListener("load", async () => {
               let comment_ul = document.querySelector(".comment_ul");
               let submit = document.querySelector(".submit");
               let textarea = document.querySelector("textarea");
-              let icons = document.querySelectorAll(".icon-dahuifu");
+
               console.log(comment_ul);
               comment.addEventListener("click", async () => {
                 songlist_con.style.display = "none";
@@ -431,6 +467,41 @@ window.addEventListener("load", async () => {
                     .then((datasong) => {
                       // console.log(datasong);
                       // console.log(datasong.data[0].url);
+                      // ----------------------------------------------------------------
+                      const songId = datasong.data[0].id;
+                      // console.log(songId);
+                      store.action.setCurrentSongIdxById(songId);
+                      let currentSongIdx = store.state.currentSongIdx;
+                      console.log(currentSongIdx);
+                      let music_img = document.querySelector(".music_img");
+                      let img_name = document.querySelector(".img_name");
+                      let img_name_p =
+                        document.querySelector(".img_name_artist");
+                      // console.log('img_name_p',img_name_p);
+                      music_img.src =
+                        playlist2.tracks[currentSongIdx].al.picUrl;
+                      img_name.innerHTML =
+                        playlist2.tracks[currentSongIdx].name;
+                      img_name_p.innerHTML =
+                        playlist2.tracks[currentSongIdx].ar[0].name;
+                      let upload = document.querySelector(".upload");
+                      music_img.addEventListener("mousemove", function () {
+                        upload.style.display = "block";
+                      });
+                      music_img.addEventListener("mouseout", function () {
+                        upload.style.display = "none";
+                      });
+                      upload.addEventListener("mousemove", function () {
+                        upload.style.display = "block";
+                      });
+                      upload.addEventListener("mouseout", function () {
+                        upload.style.display = "none";
+                      });
+                      let main = document.querySelector(".main");
+                      upload.addEventListener("click", function () {
+                        main.style.display = "none";
+                      });
+                      // ------------------------
 
                       let audio = document.getElementById("audio");
                       // audio.src=null;
@@ -689,7 +760,6 @@ let search_hint = document.querySelector(".search_hint");
 // let findMusic=document.querySelector('.findMusic');
 findMusic.addEventListener("click", function () {
   search_hint.style.display = "none";
- 
 });
 main.addEventListener("click", function () {
   search_hint.style.display = "none";
@@ -864,9 +934,9 @@ let search_con = document.querySelector(".search_con");
 let sidebar_find = document.querySelector(".sidebar_find");
 
 sidebar_find.addEventListener("click", function () {
-  let shouye=document.querySelector('.shouye');
+  let shouye = document.querySelector(".shouye");
   findMusic.style.display = "block";
-  shouye.style.display='block';
+  shouye.style.display = "block";
   main.style.display = "none";
   search_con.style.display = "none";
   handleModelClick(findMusic);
@@ -893,7 +963,6 @@ request("/personalized?limit=10", {
     tj_img.src = result[i].picUrl;
     tj_word.innerHTML = result[i].name;
     tj_count.innerText = result[i].playCount;
-
   }
   let tj_lis = document.querySelectorAll(".tj_li");
   for (let i = 0; i < result.length; i++) {
@@ -966,10 +1035,15 @@ request("/personalized?limit=10", {
       lastMusic_lis[i].addEventListener("click", function (e) {
         let id = e.currentTarget.getAttribute("songid");
         // let datalm=e.currentTarget.getAttribute("datalm");
+        console.log('ijjjjjd', id)
+
+
+
         request(`/song/url?id=${id}`, {
           method: "GET",
         }).then((data) => {
           lyric(id);
+          // handleSongDetailClick(id, data);
           let songName = document.querySelector(".songName");
           let songartist = document.querySelector(".songartist");
           store.state.songs = null;
@@ -980,11 +1054,36 @@ request("/personalized?limit=10", {
           songartist.innerHTML =
             datalm.result[currentSongIdx].song.artists[0].name;
           let lyric_left = document.querySelector(".lyric_left");
-          let newimg = document.createElement("img");
-          newimg.src = datalm.result[currentSongIdx].picUrl;
-          newimg.className = "newimg";
-          lyric_left.appendChild(newimg);
-          console.log(data);
+
+          let music_img=document.querySelector('.music_img') ;
+          let img_name=document.querySelector('.img_name');
+          let img_name_p=document.querySelector('.img_name_artist');
+
+
+          music_img.src=datalm.result[currentSongIdx].picUrl;
+          img_name.innerHTML=datalm.result[currentSongIdx].name;
+          // img_name_p.innerHTML=datalm.result[currentSongIdx].ar[0].name;
+          let upload=document.querySelector('.upload');
+          music_img.addEventListener('mousemove',function(){
+            upload.style.display='block';
+          })
+          music_img.addEventListener('mouseout',function(){
+            upload.style.display='none';
+          })
+          upload.addEventListener('mousemove',function(){
+            upload.style.display='block';
+          })
+          upload.addEventListener('mouseout',function(){
+            upload.style.display='none';
+          })
+
+
+          // let newimg = document.createElement("img");
+          // console.log('datalm.result[currentSongIdx].picUrl', datalm.result[currentSongIdx].picUrl)
+          // newimg.src = datalm.result[currentSongIdx].picUrl;
+          // newimg.className = "newimg";
+          // lyric_left.appendChild(newimg);
+          // console.log(data);
           let audio = document.getElementById("audio");
           // audio.src=null;
           console.log(audio);
@@ -1187,8 +1286,8 @@ down_arrow.addEventListener("click", function () {
   findMusic.style.display = "block";
   sidebar.style.display = "block";
   waibu.style.display = "block";
-  let shouye=document.querySelector('.shouye');
-  shouye.style.display='block';
+  let shouye = document.querySelector(".shouye");
+  shouye.style.display = "block";
 });
 
 // let cookie = localStorage.getItem("cookie");
@@ -1255,12 +1354,12 @@ preserve.addEventListener("click", function () {
     }
   ).then((data) => {
     console.log("登陆后", data);
-    
-//     let user = JSON.parse(localStorage.getItem("user"));
-// var touxiang = document.querySelector(".touxiang");
-user.profile.nickname=name.value;
 
-touxiang.innerText = user.profile.nickname;
+    //     let user = JSON.parse(localStorage.getItem("user"));
+    // var touxiang = document.querySelector(".touxiang");
+    user.profile.nickname = name.value;
+
+    touxiang.innerText = user.profile.nickname;
   });
 });
 // request('/user/playlist?uid=32953014',{

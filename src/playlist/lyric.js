@@ -1,4 +1,4 @@
-import request from "./template.js";
+import request from "../request.js";
 function lyric(id) {
     request(`/lyric?id=${id}`,{
         method:'GET',

@@ -1,9 +1,8 @@
-import request from "./template.js";
-import store from "./exg.js";
-import submit_choose from "./two_ways_submit.js";
-import clicksong_lyric from './clicksong_lyric.js';
+import request from "../request.js";
+import store from "../store.js";
+import handleSongDetailClick from './handleSongDetailClick.js';
 const user = JSON.parse(localStorage.getItem("user"));
-function clickgd(id) {
+function showPlaylist(id) {
   request(`/playlist/detail?id=${id}`, {
     methods: "GET",
   })
@@ -82,7 +81,7 @@ function clickgd(id) {
             methods: "GET",
           })
             .then((datasong) => {
-              clicksong_lyric(songId,data);
+              handleSongDetailClick(songId,data);
               console.log(datasong);
               let audio = document.getElementById("audio");
               // audio.src=null;
@@ -212,19 +211,19 @@ function clickgd(id) {
             let icons = document.querySelectorAll(".icon-dahuifu");
             for (let i = 0; i < icons.length; i++) {
               icons[i].addEventListener("click", function (e) {
-                submit_choose.mutation.setState();
+                store.action.setState();
                 // alert('hello')
                 // console.log(e.target);
-                submit_choose.mutation.setSpeaker(
+                store.action.setSpeaker(
                   e.target.getAttribute("speaker")
                 );
-                console.log(submit_choose.state.speaker);
+                console.log(store.state.speaker);
                 let textarea = document.querySelector("#textarea");
                 textarea.placeholder =
-                  "回复" + `${submit_choose.state.speaker}`;
+                  "回复" + `${store.state.speaker}`;
                 // console.log(textarea.placeholder);
 
-                submit_choose.mutation.setContent(
+                store.action.setContent(
                   e.target.getAttribute("content")
                 );
 
@@ -234,7 +233,7 @@ function clickgd(id) {
             // 发送的两种表现
             submit.addEventListener("click", function () {
               // alert('hello');
-              if (submit_choose.state.state == false) {
+              if (store.state.state == false) {
                 let my_comment = document.createElement("li");
                 my_comment.classList = "my_comment";
 
@@ -257,9 +256,9 @@ function clickgd(id) {
                 isreply.appendChild(isreplyed);
                 isreplyed.className = "isreplyed";
                 isreplyed.innerHTML =
-                  `<span>${submit_choose.state.speaker}</span>` +
+                  `<span>${store.state.speaker}</span>` +
                   ":" +
-                  `<span>${submit_choose.state.content}</span>`;
+                  `<span>${store.state.content}</span>`;
                 let reply = document.createElement("div");
                 let icon = document.createElement("i");
                 icon.classList.add("iconfont", "icon-dahuifu");
@@ -274,4 +273,4 @@ function clickgd(id) {
     })
     .catch((error) => console.error(error));
 }
-export default clickgd;
+export default showPlaylist;

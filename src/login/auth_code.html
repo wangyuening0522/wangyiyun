@@ -40,31 +40,31 @@
   </style>
   <body>
     <div class="box">
-      <h1>LOGIN</h1>
-      <input onchange="handlePhone(this)" type="text" placeholder="Phone" />
+      <h1>MAILBOX LOGIN</h1>
+      <input onchange="handlePhone(this)" type="text" placeholder="@163Email" />
       <input
         onchange="handlePassword(this)"
         type="password"
         placeholder="Password"
       />
       <button class="btn">Login</button>
-      <button class="btn btn_lose">登陆不上点我！</button>
+      <!-- <button class="btn btn_lose">登陆不上点我！</button> -->
     </div>
     <script>
       let btn = document.querySelector("button");
       const form = {
-        phone: "",
+        email: "",
         password: "",
       };
       const message = {};
       const handlePhone = (e) => {
-        form.phone = e.value;
-        console.log(form.phone);
+        form.email = e.value;
+        console.log(form.email);
       };
       const handlePassword = (e) => {
         // form.password = e.value
         // console.log(form.password)
-        form.password = "3a2f4d9359a47f8a122987c2cee1f27b";
+        form.password = e.value;
       };
       btn.addEventListener("click", async () => {
         let inputText = document.querySelector('input[type="text"]').value;
@@ -73,16 +73,15 @@
         ).value;
         console.log(inputText);
         console.log(inputPassword);
-        const res = await fetch(`http://localhost:3000/login/cellphone`, {
+        const res = await fetch(`http://localhost:3000/login?email=${inputText}@163.com&password=${inputPassword}`, {
           method: "post",
           body: JSON.stringify({
-            phone: form.phone,
-            md5_password: form.password,
+            email: inputText,
+            password: inputPassword,
           }),
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: 'include',
         })
           .then((res) => {
             const result = res.json();
@@ -98,11 +97,11 @@
           .catch((err) => {
             throw new Error("请求错误" + err);
           });
-        window.location.href = "home_page.html";
+        window.location.href = "../home/home_page.html";
       });
-
       function login(user) {
         localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem('cookie',JSON.stringify(user.token));
       }
       function checkLogin() {
         const user = localStorage.getItem("user");
@@ -111,10 +110,9 @@
         }
         return null;
       }
-      let btn_lose = document.querySelector(".btn_lose");
-      btn_lose.addEventListener("click", function () {
-        window.location.href = "auth_code.html";
-      });
+      // let btn_lose = document.querySelector(".btn_lose");
+      // btn_lose.addEventListener("click", function () {
+      // });
     </script>
   </body>
 </html>

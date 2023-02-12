@@ -40,31 +40,31 @@
   </style>
   <body>
     <div class="box">
-      <h1>MAILBOX LOGIN</h1>
-      <input onchange="handlePhone(this)" type="text" placeholder="@163Email" />
+      <h1>LOGIN</h1>
+      <input onchange="handlePhone(this)" type="text" placeholder="Phone" />
       <input
         onchange="handlePassword(this)"
         type="password"
         placeholder="Password"
       />
       <button class="btn">Login</button>
-      <!-- <button class="btn btn_lose">登陆不上点我！</button> -->
+      <button class="btn btn_lose">登陆不上点我！</button>
     </div>
     <script>
       let btn = document.querySelector("button");
       const form = {
-        email: "",
+        phone: "",
         password: "",
       };
       const message = {};
       const handlePhone = (e) => {
-        form.email = e.value;
-        console.log(form.email);
+        form.phone = e.value;
+        console.log(form.phone);
       };
       const handlePassword = (e) => {
         // form.password = e.value
         // console.log(form.password)
-        form.password = e.value;
+        form.password = "3a2f4d9359a47f8a122987c2cee1f27b";
       };
       btn.addEventListener("click", async () => {
         let inputText = document.querySelector('input[type="text"]').value;
@@ -73,15 +73,16 @@
         ).value;
         console.log(inputText);
         console.log(inputPassword);
-        const res = await fetch(`http://localhost:3000/login?email=${inputText}@163.com&password=${inputPassword}`, {
+        const res = await fetch(`http://localhost:3000/login/cellphone`, {
           method: "post",
           body: JSON.stringify({
-            email: inputText,
-            password: inputPassword,
+            phone: form.phone,
+            md5_password: form.password,
           }),
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: 'include',
         })
           .then((res) => {
             const result = res.json();
@@ -97,11 +98,11 @@
           .catch((err) => {
             throw new Error("请求错误" + err);
           });
-        window.location.href = "home_page.html";
+        window.location.href = "../home/home_page.html";
       });
+
       function login(user) {
         localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem('cookie',JSON.stringify(user.token));
       }
       function checkLogin() {
         const user = localStorage.getItem("user");
@@ -110,10 +111,18 @@
         }
         return null;
       }
-      // let btn_lose = document.querySelector(".btn_lose");
-      // btn_lose.addEventListener("click", function () {
-      //   window.location.href = "auth_code.html";
-      // });
+      let btn_lose = document.querySelector(".btn_lose");
+      btn_lose.addEventListener("click", function () {
+        window.location.href = "auth_code.html";
+      });
+      //登录使用jwt
+      //1. 前端请求登陆接口
+      //2. 服务端返回给前端经过加密的token
+      //3. 前端接收到token后使用localStorage保存在本地
+      //4. 前端每次请求时将token带上(当前实现中后端接口提供了cookie参数可以传入token）
+      //(但一般实现中可以通过header[Authorization]来向后端从传token)
+      //5. 后端收到请求后，用自己的私钥解密token，获得用户信息，进行对应处理
     </script>
   </body>
 </html>
+

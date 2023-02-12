@@ -1,12 +1,12 @@
-import request from "./template.js";
-import store from './exg.js';
-function clicksong_lyric(id,songsdata) {
+import request from "../request.js";
+import store from "../store.js";
+function handleSongDetailClick(id, songsdata) {
   request(`/lyric?id=${id}`, {
     method: "GET",
   })
     .then((datalr) => {
-      console.log('datalr',datalr);
-      console.log('datalr.lrc.lyric',datalr.lrc.lyric);
+      console.log("datalr", datalr);
+      console.log("datalr.lrc.lyric", datalr.lrc.lyric);
       let lyric = datalr.lrc.lyric;
       let Obj = {};
       let reg = /\[(.*?)](.*)/g;
@@ -24,18 +24,19 @@ function clicksong_lyric(id,songsdata) {
       console.log("songname", songname);
       let songName = document.querySelector(".songName");
       let songartist = document.querySelector(".songartist");
-      store.state.songs=null;
-      store.state.songs=songsdata.playlist.tracks;
+      store.state.songs = null;
+      store.state.songs = songsdata.playlist.tracks;
       store.action.setCurrentSongIdxById(id);
       let currentSongIdx = store.state.currentSongIdx;
-      songName.innerHTML=songsdata.playlist.tracks[currentSongIdx].name;
-      songartist.innerHTML=songsdata.playlist.tracks[currentSongIdx].ar[0].name;
-      let lyric_left=document.querySelector('.lyric_left');
-      let newimg=document.createElement('img');
-      newimg.src=songsdata.playlist.tracks[currentSongIdx].al.picUrl;
-      newimg.className='newimg';
+      songName.innerHTML = songsdata.playlist.tracks[currentSongIdx].name;
+      songartist.innerHTML =
+        songsdata.playlist.tracks[currentSongIdx].ar[0].name;
+      let lyric_left = document.querySelector(".lyric_left");
+      let newimg = document.createElement("img");
+      newimg.src = songsdata.playlist.tracks[currentSongIdx].al.picUrl;
+      newimg.className = "newimg";
       lyric_left.appendChild(newimg);
-    //   console.log(data);
+      //   console.log(data);
     })
     .catch((err) => {
       throw new Error("请求错误" + err);
@@ -58,4 +59,4 @@ function clicksong_lyric(id,songsdata) {
       throw new Error("请求错误" + err);
     });
 }
-export default clicksong_lyric;
+export default handleSongDetailClick;

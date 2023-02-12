@@ -1,13 +1,13 @@
-import store from "./exg.js";
-import submit_choose from "./two_ways_submit.js";
-import request from "./template.js";
-import clickgd from "./clickgd.js";
-import lyric from "./lyric.js";
-import click_block from './click_block.js';
+import store from "../store.js";
+import request from "../request.js";
+import showPlaylist from "../playlist/showPlaylist.js";
+import lyric from "../playlist/lyric.js";
+// 解构 export deflaut只能导出一个，不加deflaut可以导出多个但是要
+//解构赋值
+import {handleModelClick} from '../utils.js';
 let data1;
 const user = JSON.parse(localStorage.getItem("user"));
 var touxiang = document.querySelector(".touxiang");
-// let clickgd;
 touxiang.innerHTML = user.profile.nickname;
 touxiang.innerHTML = `<img src='${user.profile.avatarUrl}'></img>
 <p class='p'>${user.profile.nickname}</p>
@@ -329,19 +329,19 @@ window.addEventListener("load", async () => {
                     }
                     for (var i = 0; i < icons.length; i++) {
                       icons[i].addEventListener("click", function (e) {
-                        submit_choose.mutation.setState();
+                        store.action.setState();
                         // alert('hello')
                         // console.log(e.target);
-                        submit_choose.mutation.setSpeaker(
+                        store.action.setSpeaker(
                           e.target.getAttribute("speaker")
                         );
-                        console.log(submit_choose.state.speaker);
+                        console.log(store.state.speaker);
                         let textarea = document.querySelector("#textarea");
                         textarea.placeholder =
-                          "回复" + `${submit_choose.state.speaker}`;
+                          "回复" + `${store.state.speaker}`;
                         // console.log(textarea.placeholder);
 
-                        submit_choose.mutation.setContent(
+                        store.action.setContent(
                           e.target.getAttribute("content")
                         );
 
@@ -350,7 +350,7 @@ window.addEventListener("load", async () => {
                     }
                     submit.addEventListener("click", function () {
                       // alert('hello');
-                      if (submit_choose.state.state == false) {
+                      if (store.state.state == false) {
                         let my_comment = document.createElement("li");
                         my_comment.classList = "my_comment";
                         my_comment.innerHTML =
@@ -377,9 +377,9 @@ window.addEventListener("load", async () => {
                         isreply.appendChild(isreplyed);
                         isreplyed.className = "isreplyed";
                         isreplyed.innerHTML =
-                          `<span>${submit_choose.state.speaker}</span>` +
+                          `<span>${store.state.speaker}</span>` +
                           ":" +
-                          `<span>${submit_choose.state.content}</span>`;
+                          `<span>${store.state.content}</span>`;
                         let reply = document.createElement("div");
                         let icon = document.createElement("i");
                         icon.classList.add("iconfont", "icon-dahuifu");
@@ -556,7 +556,7 @@ sidebar.addEventListener("mouseout", function () {
 sidebar.addEventListener("mouseover", function () {
   this.style.overflowY = "auto";
 });
-// // console.log(typeof(clickgd));
+
 // // var menuItems = document.querySelectorAll("li");
 // const creatgd = document.querySelector(".creatgd");
 // const creatgds = creatgd.getElementsByTagName("li");
@@ -626,7 +626,7 @@ gd.addEventListener(
           findMusic.style.display = "none";
           // console.log(typeof(e.currentTarget));
           let id = e.currentTarget.getAttribute("songid");
-          clickgd(id);
+          showPlaylist(id);
         });
       }
     })
@@ -869,7 +869,7 @@ sidebar_find.addEventListener("click", function () {
   shouye.style.display='block';
   main.style.display = "none";
   search_con.style.display = "none";
-  click_block(findMusic);
+  handleModelClick(findMusic);
 });
 request("/personalized?limit=10", {
   mathods: "GET",
@@ -887,14 +887,13 @@ request("/personalized?limit=10", {
   tj_word.innerHTML = result[0].name;
   tj_count.innerText = result[0].playCount;
 
-  // clickgd(result[0].id);
   for (let i = 1; i < result.length; i++) {
     let cloneNode = tj_li.cloneNode(true);
     tj_ul.appendChild(cloneNode);
     tj_img.src = result[i].picUrl;
     tj_word.innerHTML = result[i].name;
     tj_count.innerText = result[i].playCount;
-    // clickgd(result[i].id);
+
   }
   let tj_lis = document.querySelectorAll(".tj_li");
   for (let i = 0; i < result.length; i++) {
@@ -907,7 +906,7 @@ request("/personalized?limit=10", {
       findMusic.style.display = "none";
       // console.log(typeof(e.currentTarget));
       let id = e.currentTarget.getAttribute("songid");
-      clickgd(id);
+      showPlaylist(id);
     });
   }
   // 通过首页发现获得
@@ -1061,7 +1060,7 @@ request("/banner?type=0", {
   sz[len - 2].style.left = "0px";
   //   箭头
   let pre_img = document.createElement("img");
-  pre_img.src = "./img/pre.png";
+  pre_img.src = "../../img/pre.png";
   pre_img.style.position = "absolute";
   pre_img.style.left = 0;
   pre_img.style.top = "100px";
@@ -1073,7 +1072,7 @@ request("/banner?type=0", {
   pre_img.style.display = "none";
   cur_ul.appendChild(pre_img);
   let next_img = document.createElement("img");
-  next_img.src = "./img/next.png";
+  next_img.src = "../../img/next.png";
   next_img.style.position = "absolute";
   next_img.style.right = 0;
   next_img.style.top = "100px";
@@ -1205,7 +1204,7 @@ let setting = document.querySelector(".setting");
 setting.addEventListener("click", function () {
   findMusic.style.display = "none";
   setting_page.style.display = "block";
-  click_block(setting_page);
+  handleModelClick(setting_page);
 });
 
 //登录界面
@@ -1260,7 +1259,7 @@ preserve.addEventListener("click", function () {
 //     let user = JSON.parse(localStorage.getItem("user"));
 // var touxiang = document.querySelector(".touxiang");
 user.profile.nickname=name.value;
-// let clickgd;
+
 touxiang.innerText = user.profile.nickname;
   });
 });
